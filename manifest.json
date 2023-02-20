@@ -1,0 +1,23 @@
+{
+  "name": "Google Ads",
+  "description": "Google Ads Pixel and Conversion Linker",
+  "namespace": "google-ads",
+  "icon": "assets/google-ads-logo.svg",
+  "categories": ["Advertising"],
+  "provides": ["events"],
+  "allowCustomFields": true,
+  "permissions": {
+    "client_network_requests": {
+      "description": "Google Ads uses client fetch to attribute sessions accurately",
+      "required": true
+    },
+    "access_client_kv": {
+      "description": "Stores UUIDs as cookies",
+      "required": true
+    },
+    "execute_unsafe_scripts": {
+      "description": "Used to execute Google Conversion Linker code",
+      "required": false
+    }
+  }
+}

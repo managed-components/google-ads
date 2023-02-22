@@ -1,6 +1,10 @@
 import { ComponentSettings, Manager, MCEvent } from '@managed-components/types'
 
-export const conversionLinkerHandler = async (eventType: string, event: MCEvent, settings: ComponentSettings) => {
+export const conversionLinkerHandler = async (
+  eventType: string,
+  event: MCEvent,
+  settings: ComponentSettings
+) => {
   const { client } = event
 
   const gclid = client.url.searchParams.get('gclid')
@@ -9,7 +13,7 @@ export const conversionLinkerHandler = async (eventType: string, event: MCEvent,
     client.set('_gcl_aw', `GCL.${ts}.${gclid}`, {
       scope: 'infinite',
     })
-  } 
+  }
   if (settings.domains) {
     const clientJS = `function linker(a,p){var g=[{domains:${JSON.stringify(
       settings.domains.split(',')

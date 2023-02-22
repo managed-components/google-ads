@@ -9,30 +9,34 @@ function getRandomInt(min: number, max: number): number {
 }
 
 interface GAdsQuery {
-  guid: string,
-  random: number,
-  fst: number,
-  cv: number,
-  sendb: number,
-  num: number,
-  u_java: boolean,
-  url: URL | string,
-  tiba?: string,
-  u_tz: number,
-  u_his: number,
-  u_h?: number,
-  u_w?: number,
-  u_ah?: number,
-  u_aw?: number,
-  ig: number,
-  ref?: string,
-  gclaw?: string,
-  gac?: string,
+  guid: string
+  random: number
+  fst: number
+  cv: number
+  sendb: number
+  num: number
+  u_java: boolean
+  url: URL | string
+  tiba?: string
+  u_tz: number
+  u_his: number
+  u_h?: number
+  u_w?: number
+  u_ah?: number
+  u_aw?: number
+  ig: number
+  ref?: string
+  gclaw?: string
+  gac?: string
 }
 
-export const eventHandler = async (eventType: string, event: MCEvent, settings: ComponentSettings) => {
+export const eventHandler = async (
+  eventType: string,
+  event: MCEvent,
+  settings: ComponentSettings
+) => {
   const { client, payload } = event
-  const neededFetch = [];
+  const neededFetch = []
 
   const { conversionId, ...data } = payload
 
@@ -67,7 +71,10 @@ export const eventHandler = async (eventType: string, event: MCEvent, settings: 
   if (client.url.searchParams.get('_gl')) {
     try {
       const gclaw = atob(
-        (client.url.searchParams.get('_gl')?.split('*').pop()||'').replaceAll('.', '')
+        (client.url.searchParams.get('_gl')?.split('*').pop() || '').replaceAll(
+          '.',
+          ''
+        )
       )
       client.set('_gcl_aw', gclaw, {
         scope: 'infinite',
@@ -96,11 +103,12 @@ export const eventHandler = async (eventType: string, event: MCEvent, settings: 
     query.gac = settings.gaAccount + ':' + query.gclaw
   }
 
-  const params = new URLSearchParams({...query, ...data}).toString()
-  
-  const baseURL = eventType === 'remarketing'
-    ? "https://www.google.com/pagead/1p-user-list"
-    : "https://www.googleadservices.com/pagead/conversion"
+  const params = new URLSearchParams({ ...query, ...data }).toString()
+
+  const baseURL =
+    eventType === 'remarketing'
+      ? 'https://www.google.com/pagead/1p-user-list'
+      : 'https://www.googleadservices.com/pagead/conversion'
   neededFetch.push(`${baseURL}/${conversionId}/?${params}`)
 
   neededFetch.push(
@@ -113,7 +121,7 @@ export const eventHandler = async (eventType: string, event: MCEvent, settings: 
       mode: 'no-cors',
       keepalive: true,
     })
-  });
+  })
 
   if (settings.conversionLinker) {
     await conversionLinkerHandler(eventType, event, settings)

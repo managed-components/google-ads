@@ -38,7 +38,8 @@ export const eventHandler = async (
   const { client, payload } = event
   const neededFetch = []
 
-  const { conversionId, ...data } = payload
+  const conversionId = payload.conversionId || settings.conversionId
+  delete payload.conversionId
 
   const query: GAdsQuery = {
     guid: 'ON',
@@ -103,7 +104,7 @@ export const eventHandler = async (
     query.gac = settings.gaAccount + ':' + query.gclaw
   }
 
-  const params = new URLSearchParams({ ...query, ...data }).toString()
+  const params = new URLSearchParams({ ...query, ...payload }).toString()
 
   const baseURL =
     eventType === 'remarketing'

@@ -1,4 +1,4 @@
-import { ComponentSettings, Manager, MCEvent } from '@managed-components/types'
+import { ComponentSettings, MCEvent } from '@managed-components/types'
 
 export const conversionLinkerHandler = async (
   eventType: string,

@@ -21,18 +21,6 @@ Find out more about Managed Components [here](https://blog.cloudflare.com/zaraz-
 
 `conversionId` - Google Ads conversion tags help to build reports that show you what happens after a customer clicks on your ads.
 
-### Google Analytics Account `string` _required_
-
-`gaAccount` - Enter your Google Analytics tracking ID to link to the conversion to your Google analytics account.
-
-### Tag Firing Options `string` _required_
-
-`tagFiringOptions` - Use `once-per-page` to avoid firing this tag more than once.
-
-### Once-per-page `boolean`
-
-`zrzOncePerPage` - See Tag Firing Options above.
-
 ### Enable Conversion Linker `boolean`
 
 `conversionLinker` - Enables the conversion linker for this Google Ads component.
@@ -51,6 +39,18 @@ Its value will determine how Google Ads will process it.
 ### Label `string`
 
 `label` - The Conversion Label identifies the specific conversion. [Learn more](https://support.google.com/google-ads/answer/6095821)
+
+### Google Analytics Account `string` _required_
+
+`gaAccount` - Enter your Google Analytics tracking ID to link to the conversion to your Google analytics account.
+
+### Once-per-page `boolean`
+
+`zrzOncePerPage` - Use to avoid firing tag more than once.
+
+### Domains `string`
+
+`domains` - Expects a comma separated list of domains to set up cross-domain measurement. [Learn more](https://developers.google.com/tag-platform/devguides/cross-domain)
 
 ## 📝 License
 

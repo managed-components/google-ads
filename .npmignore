@@ -1,1 +1,9 @@
 src
+.all-contributorsrc
+.eslintrc.js
+.github/workflows/test.yml
+.prettierrc
+assets/google-ads-logo.svg
+esbuild.js
+tsconfig.build.json
+tsconfig.json

@@ -10,7 +10,7 @@ function getRandomInt(min: number, max: number): number {
 
 interface GAdsQuery {
   guid: string
-  random: number
+  rnd: number
   fst: number
   cv: number
   sendb: number
@@ -43,14 +43,14 @@ export const eventHandler = async (
 
   const query: GAdsQuery = {
     guid: 'ON',
-    random: new Date().valueOf() + getRandomInt(100, 1600000),
+    rnd: new Date().valueOf() + getRandomInt(100, 1600000),
     fst: new Date().valueOf(), // google_conversion_first_time
     cv: 9, // google_conversion_js_version
     sendb: 1,
     num: 1,
     // u_cd: system.device.colors, // TODO: How do we want to handle this?
     u_java: false,
-    url: client.url.href,
+    url: client.url.hostname + client.url.pathname,
     tiba: client.title,
     u_tz: -(client.timezoneOffset || 0),
     // resp: 'GooglemKTybQhCsO',
@@ -97,7 +97,7 @@ export const eventHandler = async (
     url.searchParams.append('gclid', query.gclaw)
     query.url = url
     neededFetch.push(
-      `https://www.google.com/pagead/landing?gclid=${query.gclaw}`
+      `https://www.google.com/pagead/landing?gclid=${query.gclaw}&url=${query.url}&rnd=${query.rnd}`
     )
   }
   if (query.gclaw && settings.gaAccount) {

@@ -69,6 +69,14 @@ export const eventHandler = async (
   // bg: "ffffff",
   // u_nplug: 3
   // u_nmime: 4
+
+  if (settings.conversionLinker) {
+    // always handle conversion linker if gclid query param exists
+    if (client.url.searchParams.get('gclid')) {
+      conversionLinkerHandler(event, settings)
+    }
+  }
+
   if (client.url.searchParams.get('_gl')) {
     try {
       const gclaw = atob(
@@ -89,9 +97,7 @@ export const eventHandler = async (
   if (client.get('_gcl_aw')) {
     query.gclaw = client.get('_gcl_aw')?.split('.').pop()
   }
-  if (client.get('gclid')) {
-    query.gclaw = client.get('gclid')
-  }
+
   if (query.gclaw) {
     const url = new URL(query.url)
     url.searchParams.append('gclid', query.gclaw)
@@ -105,11 +111,15 @@ export const eventHandler = async (
   }
 
   const params = new URLSearchParams({ ...query, ...payload }).toString()
-
-  const baseURL =
-    eventType === 'remarketing'
-      ? 'https://www.google.com/pagead/1p-user-list'
-      : 'https://www.googleadservices.com/pagead/conversion'
+  
+  let baseURL = ''
+  if (eventType === 'pageview') {
+    return
+  } else if (eventType === 'remarketing') {
+    baseURL = 'https://www.google.com/pagead/1p-user-list'
+  } else {
+    baseURL = 'https://www.googleadservices.com/pagead/conversion'
+  }
   neededFetch.push(`${baseURL}/${conversionId}/?${params}`)
 
   neededFetch.push(
@@ -123,13 +133,12 @@ export const eventHandler = async (
       keepalive: true,
     })
   })
-
-  if (settings.conversionLinker) {
-    await conversionLinkerHandler(eventType, event, settings)
-  }
 }
 
 export default async function (manager: Manager, settings: ComponentSettings) {
+  manager.addEventListener('pageview', event => {
+    eventHandler('pageview', event, settings)
+  })
   manager.addEventListener('conversion', event => {
     eventHandler('conversion', event, settings)
   })

@@ -111,7 +111,7 @@ export const eventHandler = async (
   }
 
   const params = new URLSearchParams({ ...query, ...payload }).toString()
-  
+
   let baseURL = ''
   if (eventType === 'pageview') {
     return

@@ -94,6 +94,10 @@ export const eventHandler = async (
       console.error(e)
     }
   }
+  if (eventType === 'pageview') {
+    return
+  }
+
   if (client.get('_gcl_aw')) {
     query.gclaw = client.get('_gcl_aw')?.split('.').pop()
   }
@@ -113,9 +117,7 @@ export const eventHandler = async (
   const params = new URLSearchParams({ ...query, ...payload }).toString()
 
   let baseURL = ''
-  if (eventType === 'pageview') {
-    return
-  } else if (eventType === 'remarketing') {
+  if (eventType === 'remarketing') {
     baseURL = 'https://www.google.com/pagead/1p-user-list'
   } else {
     baseURL = 'https://www.googleadservices.com/pagead/conversion'

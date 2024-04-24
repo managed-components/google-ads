@@ -1,7 +1,6 @@
 import { ComponentSettings, MCEvent } from '@managed-components/types'
 
-export const conversionLinkerHandler = async (
-  eventType: string,
+export const conversionLinkerHandler = (
   event: MCEvent,
   settings: ComponentSettings
 ) => {

@@ -71,7 +71,7 @@ export const eventHandler = async (
   // u_nmime: 4
 
   if (settings.conversionLinker) {
-    // always handle conversion linker if gclid query param exists
+    // only handle conversion linker if gclid query param exists
     if (client.url.searchParams.get('gclid')) {
       conversionLinkerHandler(event, settings)
     }

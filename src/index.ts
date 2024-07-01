@@ -70,7 +70,6 @@ export const eventHandler = async (
   // u_nplug: 3
   // u_nmime: 4
 
-
   if (client.url.searchParams.get('_gl')) {
     try {
       const gclaw = atob(

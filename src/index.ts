@@ -70,13 +70,6 @@ export const eventHandler = async (
   // u_nplug: 3
   // u_nmime: 4
 
-  if (settings.conversionLinker) {
-    // only handle conversion linker if gclid query param exists
-    if (client.url.searchParams.get('gclid')) {
-      conversionLinkerHandler(event, settings)
-    }
-  }
-
   if (client.url.searchParams.get('_gl')) {
     try {
       const gclaw = atob(
@@ -139,6 +132,7 @@ export const eventHandler = async (
 
 export default async function (manager: Manager, settings: ComponentSettings) {
   manager.addEventListener('pageview', event => {
+    conversionLinkerHandler(event, settings)
     eventHandler('pageview', event, settings)
   })
   manager.addEventListener('conversion', event => {

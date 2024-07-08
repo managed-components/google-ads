@@ -4,22 +4,30 @@ export const getRandomInt = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min)) + min
 
 export function setGclAwCookie(client: Client) {
-  // search for _gl param and set it as the _gcl_aw cookie value
+  // search for _gl param used for cross-domain tracking, and extract the _gcl_aw cookie value from it
   try {
+    const ts = Math.floor(new Date().valueOf() / 1000)
     if (client.url.searchParams.get('_gl')) {
-      const gclaw = (
-        client.url.searchParams.get('_gl')?.split('*').pop() || ''
-      ).replaceAll('.', '')
+      const glParam = client.url.searchParams.get('_gl')
 
-      client.set('_gcl_aw', gclaw, {
-        scope: 'infinite',
-      })
+      if (glParam) {
+        const glParts = glParam.split('*')
+
+        // Find the part that starts with _gcl_aw
+        const gclawIndex = glParts.findIndex(part => part === '_gcl_aw')
+        if (gclawIndex !== -1 && gclawIndex + 1 < glParts.length) {
+          const gclid = glParts[gclawIndex + 1] // Extract the value after _gcl_aw
+          client.set('_gcl_aw', `GCL.${ts}.${gclid}`, {
+            scope: 'infinite',
+          })
+        }
+      }
     }
+
     // search for gclid param and set it as the _gcl_aw cookie value
     if (client.url.searchParams.get('gclid')) {
       const gclid = client.url.searchParams.get('gclid')
       if (gclid) {
-        const ts = Math.floor(new Date().valueOf() / 1000)
         client.set('_gcl_aw', `GCL.${ts}.${gclid}`, {
           scope: 'infinite',
         })

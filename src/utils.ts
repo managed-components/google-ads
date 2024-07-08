@@ -1,11 +1,7 @@
 import { Client, ComponentSettings } from '@managed-components/types'
 
-export function getRandomInt(min: number, max: number): number {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  //The maximum is exclusive and the minimum is inclusive
-  return Math.floor(Math.random() * (max - min)) + min
-}
+export const getRandomInt = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min)) + min
 
 export function setGclAwCookie(client: Client) {
   // search for _gl param and set it as the _gcl_aw cookie value

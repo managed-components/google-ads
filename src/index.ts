@@ -1,12 +1,5 @@
 import { ComponentSettings, Manager, MCEvent } from '@managed-components/types'
-import { conversionLinkerHandler } from './conversionLinker'
-
-function getRandomInt(min: number, max: number): number {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  //The maximum is exclusive and the minimum is inclusive
-  return Math.floor(Math.random() * (max - min)) + min
-}
+import { conversionLinkerHandler, getRandomInt, setGclAwCookie } from './utils'
 
 interface GAdsQuery {
   guid: string
@@ -36,11 +29,19 @@ export const eventHandler = async (
   settings: ComponentSettings
 ) => {
   const { client, payload } = event
-  const neededFetch = []
 
-  const conversionId = payload.conversionId || settings.conversionId
-  delete payload.conversionId
+  // set the _gcl_aw cookie if _gl or gclid query params exists
+  setGclAwCookie(client)
 
+  // if pageview, run conversion linker if enabled and return
+  if (eventType === 'pageview') {
+    if (settings.domains) {
+      conversionLinkerHandler(client, settings)
+    }
+    return
+  }
+
+  // if not pageview, build the request and send it
   const query: GAdsQuery = {
     guid: 'ON',
     rnd: new Date().valueOf() + getRandomInt(100, 1600000),
@@ -65,31 +66,10 @@ export const eventHandler = async (
     }),
   }
 
-  // TODO: Add enhances parameters:
-  // bg: "ffffff",
-  // u_nplug: 3
-  // u_nmime: 4
+  const neededFetch = []
 
-  if (client.url.searchParams.get('_gl')) {
-    try {
-      const gclaw = atob(
-        (client.url.searchParams.get('_gl')?.split('*').pop() || '').replaceAll(
-          '.',
-          ''
-        )
-      )
-      client.set('_gcl_aw', gclaw, {
-        scope: 'infinite',
-      })
-      query.gclaw = gclaw.split('.').pop()
-    } catch (e) {
-      console.error('Google Conversion Pixel: Error parsing gclaw')
-      console.error(e)
-    }
-  }
-  if (eventType === 'pageview') {
-    return
-  }
+  const conversionId = payload.conversionId || settings.conversionId
+  delete payload.conversionId
 
   if (client.get('_gcl_aw')) {
     query.gclaw = client.get('_gcl_aw')?.split('.').pop()
@@ -132,7 +112,6 @@ export const eventHandler = async (
 
 export default async function (manager: Manager, settings: ComponentSettings) {
   manager.addEventListener('pageview', event => {
-    conversionLinkerHandler(event, settings)
     eventHandler('pageview', event, settings)
   })
   manager.addEventListener('conversion', event => {

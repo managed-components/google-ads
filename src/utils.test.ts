@@ -1,8 +1,8 @@
-import { Client } from '@managed-components/types'
+import type { Client } from '@managed-components/types'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { setGclAwCookie } from './utils' // Adjust this import to your actual function location
+import { setGclAwCookie } from './utils'
 
-describe('Google Ads MC', () => {
+describe('setGclAwCookie util', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })

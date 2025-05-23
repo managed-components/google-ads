@@ -1,27 +1,11 @@
-import { ComponentSettings, Manager, MCEvent } from '@managed-components/types'
-import { conversionLinkerHandler, getRandomInt, setGclAwCookie } from './utils'
-
-interface GAdsQuery {
-  guid: string
-  rnd: number
-  fst: number
-  cv: number
-  sendb: number
-  num: number
-  u_java: boolean
-  url: URL | string
-  tiba?: string
-  u_tz: number
-  u_his: number
-  u_h?: number
-  u_w?: number
-  u_ah?: number
-  u_aw?: number
-  ig: number
-  ref?: string
-  gclaw?: string
-  gac?: string
-}
+import type {
+  ComponentSettings,
+  Manager,
+  MCEvent,
+} from '@managed-components/types'
+import type { GAdsQuery } from './types'
+import { getRandomInt, setGclAwCookie } from './utils'
+import { pageViewHandler } from './events/pageview'
 
 export const eventHandler = async (
   eventType: string,
@@ -32,14 +16,6 @@ export const eventHandler = async (
 
   // set the _gcl_aw cookie if _gl or gclid query params exists
   setGclAwCookie(client)
-
-  // if pageview, run conversion linker if enabled and return
-  if (eventType === 'pageview') {
-    if (settings.domains) {
-      conversionLinkerHandler(client, settings)
-    }
-    return
-  }
 
   // if not pageview, build the request and send it
   const query: GAdsQuery = {
@@ -110,13 +86,42 @@ export const eventHandler = async (
   })
 }
 
+/**
+ * Managed Component handler for Google Ads
+ * @param manager - The Managed Components manager instance
+ * @param settings - The component settings
+ * @returns {Promise<void>}
+ */
 export default async function (manager: Manager, settings: ComponentSettings) {
+  /**
+   * Pageview event handler
+   * @remarks This event is used to load the client side conversion linker
+   * @see {@link https://support.google.com/tagmanager/answer/7549390?hl=en}
+   * @param event - The pageview event
+   * @param settings - The component settings
+   */
   manager.addEventListener('pageview', event => {
-    eventHandler('pageview', event, settings)
+    pageViewHandler(event, settings)
   })
+
+  /**
+   * Conversion event handler
+   * @remarks This event is used for conversion tracking for measuring campaign performance
+   * @see {@link https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadClickConversions}
+   * @param event - The conversion event
+   * @param settings - The component settings
+   */
   manager.addEventListener('conversion', event => {
     eventHandler('conversion', event, settings)
   })
+
+  /**
+   * Remarketing event handler
+   * @remarks This event is used for remarketing purposes
+   * @see {@link https://developers.google.com/google-ads/api/docs/dynamic-remarketing/overview}
+   * @param event - The remarketing event
+   * @param settings - The component settings
+   */
   manager.addEventListener('remarketing', event => {
     eventHandler('remarketing', event, settings)
   })
